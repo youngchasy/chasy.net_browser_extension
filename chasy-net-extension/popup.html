@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>chasy.net extension</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brandRow">
+          <button id="backBtn" class="iconBtn" type="button" aria-label="Назад" hidden>←</button>
+          <div class="brandBlock">
+            <div class="brandLine"><div class="brandName">chasy.net extension</div><div class="brandVersion">v1.0.0</div></div>
+            <div id="subtitle" class="brandMeta">Главная</div>
+          </div>
+        </div>
+
+        <div class="topbarControls">
+          <button id="themeToggle" class="iconBtn" type="button" aria-label="Сменить тему">◐</button>
+          <div id="statusBadge" class="statusBadge neutral topStatus">Выключено</div>
+          <label class="switch" aria-label="Включить прокси">
+            <input id="enabled" type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </header>
+
+      <nav class="tabs" aria-label="Навигация">
+        <button id="tabProfiles" class="tab active" type="button">Профили</button>
+        <button id="tabStats" class="tab" type="button">Статус</button>
+        <button id="tabSettings" class="tab" type="button">Настройки</button>
+      </nav>
+
+      <main class="shell">
+
+        <div id="globalNotice" class="notice" hidden></div>
+
+        <section id="viewProfiles" class="view">
+          <div id="emptyState" class="emptyState" hidden>
+            <div class="emptyTitle">Нет профилей</div>
+            <button id="addFirst" class="primary full" type="button">Добавить профиль</button>
+          </div>
+
+          <div id="profilesList" class="list" aria-label="Список профилей"></div>
+          <button id="fabAdd" class="fab" type="button" aria-label="Добавить профиль">+</button>
+        </section>
+
+        <section id="viewEditor" class="view" hidden>
+          <div class="form">
+            <label class="field span2">
+              <span>Название</span>
+              <input id="profileName" type="text" placeholder="Work proxy" />
+            </label>
+
+            <label class="field">
+              <span>Протокол</span>
+              <select id="scheme">
+                <option value="http">HTTP</option>
+                <option value="https">HTTPS</option>
+                <option value="socks5">SOCKS5</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Порт</span>
+              <input id="port" type="number" min="1" max="65535" placeholder="8080" />
+            </label>
+
+            <label class="field span2">
+              <span>Хост</span>
+              <input id="host" type="text" placeholder="127.0.0.1" />
+            </label>
+
+            <label class="checkboxRow span2">
+              <input id="authRequired" type="checkbox" />
+              <span>Нужен логин и пароль</span>
+            </label>
+
+            <div id="vaultHint" class="inlineHint" hidden>Хранилище заблокировано. Логин и пароль станут доступны после разблокировки в настройках.</div>
+
+            <div id="authBlock" class="authGrid span2">
+              <label class="field">
+                <span>Логин</span>
+                <input id="username" type="text" autocomplete="username" />
+              </label>
+              <label class="field">
+                <span>Пароль</span>
+                <input id="password" type="password" autocomplete="current-password" />
+              </label>
+            </div>
+
+            <label class="field span2">
+              <span>Исключения</span>
+              <input id="bypass" type="text" placeholder="<local>, *.internal.local" />
+            </label>
+          </div>
+
+          <div id="notice" class="notice" hidden></div>
+
+          <div class="actions">
+            <button id="cancelEdit" class="secondary" type="button">Отмена</button>
+            <button id="saveProfile" class="primary" type="button">Сохранить</button>
+          </div>
+        </section>
+
+        <section id="viewStats" class="view" hidden>
+          <button id="runTest" class="secondary full statusTestBtn" type="button">Проверить</button>
+
+          <div class="statsGrid compactStats">
+            <div class="statCard">
+              <div class="statLabel">Внешний IP</div>
+              <div id="statIp" class="statValue small">—</div>
+            </div>
+            <div class="statCard">
+              <div class="statLabel">Пинг</div>
+              <div id="statPing" class="statValue">—</div>
+            </div>
+            <div class="statCard">
+              <div class="statLabel">Загрузка</div>
+              <div id="statRx" class="statValue">—</div>
+            </div>
+            <div class="statCard">
+              <div class="statLabel">Отдача</div>
+              <div id="statTx" class="statValue">—</div>
+            </div>
+          </div>
+
+          <div class="statsFooter">
+            <div id="statSince" class="footerMeta">—</div>
+            <div class="footerActions">
+              <div id="statCheckedAt" class="footerMeta">Ещё не проверяли</div>
+              <button id="resetStats" class="linkBtn" type="button">Сбросить</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="viewSettings" class="view settingsView" hidden>
+          <section class="settingsSection">
+            <div class="sectionHead">
+              <div class="sectionTitle">Тема</div>
+            </div>
+            <div class="segmented">
+              <button id="themeLight" class="segment" type="button" data-theme="light">Светлая</button>
+              <button id="themeDark" class="segment" type="button" data-theme="dark">Тёмная</button>
+            </div>
+          </section>
+
+          <section class="settingsSection">
+            <div class="sectionHead">
+              <div class="sectionTitle">Импорт / экспорт</div>
+            </div>
+            <div class="buttonRow">
+              <button id="importBtn" class="secondary full" type="button">Импортировать</button>
+              <button id="exportBtn" class="secondary full" type="button">Экспортировать</button>
+            </div>
+            <input id="importInput" type="file" accept="application/json" hidden />
+          </section>
+
+          <section class="settingsSection">
+            <div class="sectionHead">
+              <div class="sectionTitle">Защита данных</div>
+              <div id="vaultState" class="sectionMeta">Выключена</div>
+            </div>
+
+            <div id="vaultEnableBox" class="stack">
+              <label class="field">
+                <span>Пароль хранилища</span>
+                <input id="vaultPassword" type="password" autocomplete="new-password" placeholder="Не короче 6 символов" />
+              </label>
+              <label class="field">
+                <span>Повтори пароль</span>
+                <input id="vaultPasswordConfirm" type="password" autocomplete="new-password" />
+              </label>
+              <button id="enableVaultBtn" class="secondary full" type="button">Включить защиту</button>
+            </div>
+
+            <div id="vaultUnlockBox" class="stack" hidden>
+              <label class="field">
+                <span>Пароль</span>
+                <input id="vaultUnlockPassword" type="password" autocomplete="current-password" />
+              </label>
+              <div class="buttonRow compact">
+                <button id="unlockVaultBtn" class="secondary full" type="button">Разблокировать</button>
+                <button id="disableVaultBtnLocked" class="ghostBtn full" type="button">Отключить защиту</button>
+              </div>
+            </div>
+
+            <div id="vaultManageBox" class="stack" hidden>
+              <div class="inlineHint success">Логины и пароли профилей зашифрованы и доступны только в этой сессии браузера.</div>
+              <div class="buttonRow compact">
+                <button id="lockVaultBtn" class="secondary full" type="button">Заблокировать</button>
+                <button id="disableVaultBtn" class="ghostBtn full" type="button">Отключить защиту</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="settingsSection">
+            <div class="sectionHead">
+              <div class="sectionTitle">Маршрутизация</div>
+              <div class="sectionMeta">Сайт / IP</div>
+            </div>
+
+            <div class="routeEditor">
+              <label class="field span2">
+                <span>Значение</span>
+                <input id="routeValue" type="text" placeholder="*.example.com или 10.0.0.0/24" />
+              </label>
+              <label class="field">
+                <span>Тип</span>
+                <select id="routeType">
+                  <option value="host">Сайт / домен</option>
+                  <option value="cidr">IP / CIDR</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Действие</span>
+                <select id="routeAction">
+                  <option value="direct">Без прокси</option>
+                  <option value="proxy">Через прокси</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="buttonRow compact">
+              <button id="addRouteBtn" class="secondary full" type="button">Добавить правило</button>
+              <button id="clearRoutesBtn" class="ghostBtn full" type="button">Очистить всё</button>
+            </div>
+
+            <div id="routesList" class="routeList"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

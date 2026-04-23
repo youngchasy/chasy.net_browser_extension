@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "chasy.net extension",
+  "version": "1.0.0",
+  "description": "Minimal proxy extension for Chromium: profiles, themes, import/export, encrypted credentials, status checks, and routing rules.",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "permissions": [
+    "proxy",
+    "storage",
+    "webRequest",
+    "webRequestAuthProvider"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}
